@@ -1,17 +1,7 @@
 
 *.pper
-bivariate_map_global/.Rproj.user/shared/notebooks/paths
-bivariate_map_global/.Rproj.user/shared/notebooks/patch-chunk-names
-bivariate_map_global/.Rproj.user/27826EC0/viewer-cache/3F903FFD.Rdata
-bivariate_map_global/.Rproj.user/27826EC0/sources/session-91f8cb73/lock_file
-bivariate_map_global/.Rproj.user/27826EC0/sources/session-91f8cb73/9BC1909A-contents
-bivariate_map_global/.Rproj.user/27826EC0/sources/session-91f8cb73/9BC1909A
-bivariate_map_global/.Rproj.user/27826EC0/sources/session-91f8cb73/41B4612E-contents
-bivariate_map_global/.Rproj.user/27826EC0/sources/prop/INDEX
-bivariate_map_global/.Rproj.user/27826EC0/sources/prop/2D50843F
-bivariate_map_global/.Rproj.user/27826EC0/saved_source_markers
-bivariate_map_global/.Rproj.user/27826EC0/rmd-outputs
-bivariate_map_global/.Rproj.user/27826EC0/persistent-state
-bivariate_map_global/.Rhistory
-bivariate_map_global/.DS_Store
-bivariate_map_global/bivariate_map_global.Rproj
+*.Rproj.user
+.DS_Store
+* text=auto
+* text eol=lf
+*.png binary
