@@ -90,7 +90,7 @@ bivariate_map <- ggplot(bivariate_df, aes(x = x, y = y, fill = colour, colour = 
 
 # Save the bivariate map and key as a single image
 agg_tiff("BivariateMap_Precipitation_Temperature.tif", units = "in", width = 20, height = 10, res = 400)
-agg_tiff("BivariateMap_Precipitation_Temperature.png", units = "in", width = 20, height = 10, res = 50)
+agg_png("BivariateMap_Precipitation_Temperature.png", units = "in", width = 20, height = 10, res = 300)
 ggdraw() +
   draw_plot(bivariate_map, 0, 0, 1, 1) +
   draw_plot(key, 0.05, 0.05, 0.2, 0.2)
