@@ -3,11 +3,15 @@ library(raster)
 library(sf)
 library(tidyverse)
 library(paletteer)
-library(extrafont)
 library(ragg)
 library(ggtext)
 library(gtools)
 library(cowplot)
+library(showtext)
+library(extrafont)
+
+font_add_google("Lato")
+
 
 theme_custom <- function() {
   theme_classic() %+replace%
@@ -15,7 +19,7 @@ theme_custom <- function() {
           strip.background=element_blank(), strip.text=element_text(face="bold", size=rel(1)),
           plot.title=element_text(face="bold", size=rel(1.5), hjust=0,
                                   margin=margin(0,0,5.5,0)),
-          text=element_text(family="Lato"),
+          text=element_text(family="Lato"),#
           plot.subtitle=element_text(colour="Grey40", hjust=0, vjust=1),
           plot.caption=element_text(colour="Grey40", hjust=1, vjust=1, size=rel(0.8)),
           axis.text=element_text(colour="Grey40"),
@@ -73,6 +77,17 @@ key <- ggplot(keydata) +
   ) +
   coord_fixed()
 
+bivariate_map_extent <- extent(bivariate_df)
+# capital cities
+library(rnaturalearth)
+
+world_capitals <- rnaturalearth::ne_download(type="populated_places_simple", scale = "small")
+#world_capitals_df <- as.data.frame(world_capitals)
+world_capitals_df$name <- tools::toTitleCase(world_capitals_df$name) 
+world_capitals_df <- world_capitals_df %>%
+  filter(longitude > bivariate_map_extent@xmin & longitude < bivariate_map_extent@xmax &
+           latitude > bivariate_map_extent@ymin & latitude < bivariate_map_extent@ymax)
+
 # Create a bivariate map
 bivariate_map <- ggplot(bivariate_df, aes(x = x, y = y, fill = colour, colour = colour)) +
   geom_tile() +
@@ -88,6 +103,17 @@ bivariate_map <- ggplot(bivariate_df, aes(x = x, y = y, fill = colour, colour = 
        subtitle = "Bivariate map of total precipitation and mean temperature",
        caption = "Data from ERA5-Land \nPlot by @fcojara506")
 
+
+
+bivariate_map = bivariate_map +
+  geom_point(data = world_capitals_df,
+             aes(x = longitude, y = latitude),
+             size = 1, inherit.aes = FALSE) +
+  geom_text(data = world_capitals_df,
+            aes(x = longitude, y = latitude, label = name),
+            size = 2, check_overlap = TRUE, inherit.aes = FALSE)
+
+
 # Save the bivariate map and key as a single image
 #agg_tiff("BivariateMap_Precipitation_Temperature.tif", units = "in", width = 20, height = 10, res = 400)
 agg_png("BivariateMap_Precipitation_Temperature.png", units = "in", width = 20, height = 10, res = 300)
@@ -95,4 +121,4 @@ ggdraw() +
   draw_plot(bivariate_map, 0, 0, 1, 1) +
   draw_plot(key, 0.05, 0.05, 0.2, 0.2)
 dev.off()
-dev.off()
+
