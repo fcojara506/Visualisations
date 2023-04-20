@@ -82,17 +82,23 @@ bivariate_map_extent <- extent(bivariate_df)
 library(rnaturalearth)
 
 world_capitals <- rnaturalearth::ne_download(type="populated_places_simple", scale = "small")
-#world_capitals_df <- as.data.frame(world_capitals)
+world_capitals_df <- as.data.frame(world_capitals)  %>% filter(featurecla == "Admin-0 capital")
 world_capitals_df$name <- tools::toTitleCase(world_capitals_df$name) 
 world_capitals_df <- world_capitals_df %>%
   filter(longitude > bivariate_map_extent@xmin & longitude < bivariate_map_extent@xmax &
            latitude > bivariate_map_extent@ymin & latitude < bivariate_map_extent@ymax)
-
+library(ggrepel)
 # Create a bivariate map
 bivariate_map <- ggplot(bivariate_df, aes(x = x, y = y, fill = colour, colour = colour)) +
   geom_tile() +
   scale_fill_identity() +
   scale_colour_identity() +
+  geom_point(data = world_capitals_df,
+             aes(x = longitude, y = latitude),
+             size = 1, inherit.aes = FALSE, colour = "red") +
+  geom_text_repel(data = world_capitals_df %>% filter(scalerank < 1),
+             aes(x = longitude, y = latitude, label = name),
+             size = 5, inherit.aes = FALSE,family = "Lato")+
   theme_custom() +
   theme(axis.line = element_blank(),
         axis.ticks = element_blank(),
@@ -103,17 +109,29 @@ bivariate_map <- ggplot(bivariate_df, aes(x = x, y = y, fill = colour, colour = 
        subtitle = "Bivariate map of total precipitation and mean temperature",
        caption = "Data from ERA5-Land \nPlot by @fcojara506")
 
+# library(ggplot2)
+# library(dplyr)
+# world <- map_data('world')
+# 
+#  
+#ggplot(world, ) +
+  # theme_void() +
+  # geom_map(map = world, aes(long, lat,map_id = region,))) +
+  # geom_polygon(colour="gray") +
+  # scale_fill_identity()+
+  # ggplot()+
+  # geom_point(data = world_capitals_df,
+  #            aes(x = longitude, y = latitude),
+  #            size = 1, inherit.aes = FALSE, colour = "red") +
+  # geom_text(data = world_capitals_df ,
+  #                 aes(x = longitude, y = latitude, label = name),
+  #                 size = 5, inherit.aes = FALSE,family = "Lato")
+
+# -------------------------------------------------------------------------
 
 
-bivariate_map = bivariate_map +
-  geom_point(data = world_capitals_df,
-             aes(x = longitude, y = latitude),
-             size = 1, inherit.aes = FALSE) +
-  geom_text(data = world_capitals_df,
-            aes(x = longitude, y = latitude, label = name),
-            size = 2, check_overlap = TRUE, inherit.aes = FALSE)
 
-
+#rm(precipitation_raster,temperature_raster,bivariate_map,bivariate_map_extent)
 # Save the bivariate map and key as a single image
 #agg_tiff("BivariateMap_Precipitation_Temperature.tif", units = "in", width = 20, height = 10, res = 400)
 agg_png("BivariateMap_Precipitation_Temperature.png", units = "in", width = 20, height = 10, res = 300)
