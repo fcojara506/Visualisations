@@ -9,3 +9,5 @@
 .Rhistory
 bivariate_map_global/bivariate_map_global.Rproj
 Visualisations.Rproj
+*.csv
+flows/3_CAMELScl_streamflow_mm.txt
